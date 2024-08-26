@@ -39,7 +39,6 @@ final class ToDoTableViewCell: UITableViewCell {
     }
 
     private lazy var completeButton = UIButton().forAutolayout().applying {
-        //$0.setImage(UIImage(named: "notCompleted"), for: .normal)
         $0.addTarget(self, action: #selector(completeAction), for: .touchUpInside)
     }
     
@@ -51,6 +50,8 @@ final class ToDoTableViewCell: UITableViewCell {
                                     for: .normal)
         }
     }
+
+    // MARK: init
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
@@ -105,8 +106,8 @@ extension ToDoTableViewCell {
 extension ToDoTableViewCell {
     func updateCell(with task: Todo) {
         titleLabel.text = task.title
-        subtitleLabel.text = "Subtitle"
-        dateLabel.text = Date().ISO8601Format()
+        subtitleLabel.text = task.subtitle
+        dateLabel.text = task.createdAt?.ISO8601Format()
         isCompleteTask = task.isCompleted
     }
 }
@@ -117,8 +118,6 @@ extension ToDoTableViewCell {
     @objc private func completeAction() {
         completeButton.isSelected.toggle()
         isCompleteTask = completeButton.isSelected
-//        let image = completeButton.isSelected ? Constants.completeImage : Constants.notCompleteImage
-//        completeButton.setImage(image, for: .normal)
     }
 }
 

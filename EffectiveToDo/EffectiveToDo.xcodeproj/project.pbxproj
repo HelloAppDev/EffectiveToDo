@@ -35,6 +35,14 @@
 		1596BB3F2C7B9F4E0079D573 /* TodoListInteractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB3E2C7B9F4E0079D573 /* TodoListInteractorProtocol.swift */; };
 		1596BB412C7B9FC90079D573 /* TodoListPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB402C7B9FC90079D573 /* TodoListPresenterProtocol.swift */; };
 		1596BB432C7B9FF50079D573 /* TodoListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB422C7B9FF50079D573 /* TodoListRouter.swift */; };
+		1596BB4D2C7BF49A0079D573 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB4C2C7BF49A0079D573 /* DetailViewController.swift */; };
+		1596BB4F2C7BF4E40079D573 /* DetailViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB4E2C7BF4E40079D573 /* DetailViewProtocol.swift */; };
+		1596BB512C7BF54D0079D573 /* DetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB502C7BF54D0079D573 /* DetailPresenter.swift */; };
+		1596BB542C7BF5A20079D573 /* DetailPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB532C7BF5A20079D573 /* DetailPresenterProtocol.swift */; };
+		1596BB562C7BF5D80079D573 /* DetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB552C7BF5D80079D573 /* DetailInteractor.swift */; };
+		1596BB582C7BF5E70079D573 /* DetailInteractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB572C7BF5E70079D573 /* DetailInteractorProtocol.swift */; };
+		1596BB5A2C7BF6270079D573 /* DetailRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB592C7BF6270079D573 /* DetailRouter.swift */; };
+		1596BB5C2C7BF65C0079D573 /* DetailRouterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +93,14 @@
 		1596BB3E2C7B9F4E0079D573 /* TodoListInteractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListInteractorProtocol.swift; sourceTree = "<group>"; };
 		1596BB402C7B9FC90079D573 /* TodoListPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListPresenterProtocol.swift; sourceTree = "<group>"; };
 		1596BB422C7B9FF50079D573 /* TodoListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListRouter.swift; sourceTree = "<group>"; };
+		1596BB4C2C7BF49A0079D573 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		1596BB4E2C7BF4E40079D573 /* DetailViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewProtocol.swift; sourceTree = "<group>"; };
+		1596BB502C7BF54D0079D573 /* DetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPresenter.swift; sourceTree = "<group>"; };
+		1596BB532C7BF5A20079D573 /* DetailPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPresenterProtocol.swift; sourceTree = "<group>"; };
+		1596BB552C7BF5D80079D573 /* DetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailInteractor.swift; sourceTree = "<group>"; };
+		1596BB572C7BF5E70079D573 /* DetailInteractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailInteractorProtocol.swift; sourceTree = "<group>"; };
+		1596BB592C7BF6270079D573 /* DetailRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRouter.swift; sourceTree = "<group>"; };
+		1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRouterProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,10 +154,6 @@
 			isa = PBXGroup;
 			children = (
 				150773FD2C7B0C3B00CE7044 /* Source */,
-				150773FC2C7B0A4E00CE7044 /* ToDoModule */,
-				150773C92C78CE8200CE7044 /* AppDelegate.swift */,
-				150773CB2C78CE8200CE7044 /* SceneDelegate.swift */,
-				150773DA2C78CE8400CE7044 /* Info.plist */,
 				150773FE2C7B0C4000CE7044 /* Resource */,
 				150773D22C78CE8200CE7044 /* EffectiveToDo.xcdatamodeld */,
 			);
@@ -180,6 +192,8 @@
 		150773FD2C7B0C3B00CE7044 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				1596BB452C7BF3DE0079D573 /* Flows */,
+				1596BB442C7BF3A20079D573 /* Application */,
 				1596BB3B2C7B9B810079D573 /* NetworkResponses */,
 				1596BB232C7B7E6F0079D573 /* Helpers */,
 				150773FF2C7B0C7400CE7044 /* Extensions */,
@@ -191,6 +205,7 @@
 		150773FE2C7B0C4000CE7044 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				150773DA2C78CE8400CE7044 /* Info.plist */,
 				150773D72C78CE8400CE7044 /* LaunchScreen.storyboard */,
 				150773D52C78CE8400CE7044 /* Assets.xcassets */,
 			);
@@ -276,6 +291,79 @@
 				1596BB3C2C7B9B9B0079D573 /* TodoResponse.swift */,
 			);
 			path = NetworkResponses;
+			sourceTree = "<group>";
+		};
+		1596BB442C7BF3A20079D573 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				150773C92C78CE8200CE7044 /* AppDelegate.swift */,
+				150773CB2C78CE8200CE7044 /* SceneDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		1596BB452C7BF3DE0079D573 /* Flows */ = {
+			isa = PBXGroup;
+			children = (
+				150773FC2C7B0A4E00CE7044 /* ToDoModule */,
+				1596BB462C7BF3F00079D573 /* DetailScreenModule */,
+			);
+			path = Flows;
+			sourceTree = "<group>";
+		};
+		1596BB462C7BF3F00079D573 /* DetailScreenModule */ = {
+			isa = PBXGroup;
+			children = (
+				1596BB472C7BF4200079D573 /* View */,
+				1596BB482C7BF4260079D573 /* Interactor */,
+				1596BB492C7BF42F0079D573 /* Presenter */,
+				1596BB4A2C7BF43E0079D573 /* Entity */,
+				1596BB4B2C7BF4490079D573 /* Router */,
+			);
+			path = DetailScreenModule;
+			sourceTree = "<group>";
+		};
+		1596BB472C7BF4200079D573 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				1596BB4C2C7BF49A0079D573 /* DetailViewController.swift */,
+				1596BB4E2C7BF4E40079D573 /* DetailViewProtocol.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		1596BB482C7BF4260079D573 /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				1596BB552C7BF5D80079D573 /* DetailInteractor.swift */,
+				1596BB572C7BF5E70079D573 /* DetailInteractorProtocol.swift */,
+			);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
+		1596BB492C7BF42F0079D573 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				1596BB502C7BF54D0079D573 /* DetailPresenter.swift */,
+				1596BB532C7BF5A20079D573 /* DetailPresenterProtocol.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		1596BB4A2C7BF43E0079D573 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
+		1596BB4B2C7BF4490079D573 /* Router */ = {
+			isa = PBXGroup;
+			children = (
+				1596BB592C7BF6270079D573 /* DetailRouter.swift */,
+				1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */,
+			);
+			path = Router;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -418,14 +506,20 @@
 				1596BB222C7B359C0079D573 /* StringExtensions.swift in Sources */,
 				1596BB202C7B17B80079D573 /* ToDoTableViewCell.swift in Sources */,
 				1596BB3F2C7B9F4E0079D573 /* TodoListInteractorProtocol.swift in Sources */,
+				1596BB5C2C7BF65C0079D573 /* DetailRouterProtocol.swift in Sources */,
 				1596BB432C7B9FF50079D573 /* TodoListRouter.swift in Sources */,
 				1596BB382C7B88F70079D573 /* TodoDBO+CoreDataClass.swift in Sources */,
+				1596BB5A2C7BF6270079D573 /* DetailRouter.swift in Sources */,
 				150774032C7B0CC600CE7044 /* NSObjectProtocol+Additions.swift in Sources */,
+				1596BB582C7BF5E70079D573 /* DetailInteractorProtocol.swift in Sources */,
 				1596BB362C7B87360079D573 /* CoreDataManager.swift in Sources */,
 				150774012C7B0C8F00CE7044 /* UIViewExtension.swift in Sources */,
 				150773CE2C78CE8200CE7044 /* TodoListViewController.swift in Sources */,
 				1596BB322C7B869A0079D573 /* TodoListRouterProtocol.swift in Sources */,
 				1596BB302C7B86370079D573 /* TodoListViewProtocol.swift in Sources */,
+				1596BB512C7BF54D0079D573 /* DetailPresenter.swift in Sources */,
+				1596BB4F2C7BF4E40079D573 /* DetailViewProtocol.swift in Sources */,
+				1596BB4D2C7BF49A0079D573 /* DetailViewController.swift in Sources */,
 				1596BB412C7B9FC90079D573 /* TodoListPresenterProtocol.swift in Sources */,
 				1596BB3A2C7B8AC00079D573 /* TodoDBO+CoreDataProperties.swift in Sources */,
 				150773D42C78CE8200CE7044 /* EffectiveToDo.xcdatamodeld in Sources */,
@@ -433,7 +527,9 @@
 				150773CA2C78CE8200CE7044 /* AppDelegate.swift in Sources */,
 				1596BB252C7B7E840079D573 /* LaunchManager.swift in Sources */,
 				1596BB3D2C7B9B9B0079D573 /* TodoResponse.swift in Sources */,
+				1596BB562C7BF5D80079D573 /* DetailInteractor.swift in Sources */,
 				1596BB2C2C7B83AD0079D573 /* TodoListInteractor.swift in Sources */,
+				1596BB542C7BF5A20079D573 /* DetailPresenterProtocol.swift in Sources */,
 				1596BB342C7B86A90079D573 /* Todo.swift in Sources */,
 				150773CC2C78CE8200CE7044 /* SceneDelegate.swift in Sources */,
 			);
@@ -611,7 +707,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WM2J5647TH;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = EffectiveToDo/Info.plist;
+				INFOPLIST_FILE = EffectiveToDo/Resource/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -637,7 +733,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WM2J5647TH;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = EffectiveToDo/Info.plist;
+				INFOPLIST_FILE = EffectiveToDo/Resource/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

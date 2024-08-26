@@ -28,7 +28,8 @@ class TodoListPresenter: TodoListPresenterProtocol {
     
     func convertAsTask(_ todoDBO: [TodoDBO]) -> [Todo] {
         return todoDBO.map { todoDBO in
-            Todo(title: todoDBO.title,
+            Todo(id: todoDBO.id,
+                 title: todoDBO.title,
                  subtitle: todoDBO.subtitle,
                  createdAt: todoDBO.createdAt,
                  isCompleted: todoDBO.isCompleted)
@@ -38,5 +39,13 @@ class TodoListPresenter: TodoListPresenterProtocol {
     func didFetchTasks(_ tasks: [Todo]) {
         self.tasks = tasks
         view?.refreshTodoList()
+    }
+    
+    func routeToAddTask() {
+        router.navigateToNewTask()
+    }
+    
+    func navigateToDetail(_ todo: Todo) {
+        router.navigateToTaskDetail(with: todo)
     }
 }

@@ -13,11 +13,11 @@ class TodoListInteractor: TodoListInteractorProtocol {
     let coreDataManager = CoreDataManager.shared
 
     func fetchTasks() {
-       // if LaunchManager.shared.isFirstLaunch {
+        if LaunchManager.shared.isFirstLaunch {
             fetchTasksFromAPI()
-//        } else {
-//            fetchTasksFromCoreData()
-//        }
+        } else {
+            fetchTasksFromCoreData()
+        }
     }
 
     private func fetchTasksFromAPI() {
@@ -28,21 +28,11 @@ class TodoListInteractor: TodoListInteractorProtocol {
                     print("Error fetching tasks from API: \(error)")
                     return
                 }
-                
+
                 guard let data = data else { return }
                 do {
                     let jsonDecoder = JSONDecoder()
                     let todoResponse = try jsonDecoder.decode(TodoResponse.self, from: data)
-                    
-//                    var todos = [Todo]()
-//                    for task in todoResponse.todos {
-//                        let todoTask = Todo(title: task.todo,
-//                                            subtitle: nil,
-//                                            createdAt: <#T##Date#>, isCompleted: <#T##Bool#>)
-//                        todos.append(todoTask)
-//                    }
-//                    self.saveTasksToCoreData(tasks: todos)
-                    
                     DispatchQueue.main.async {
                         self.presenter?.didFetchTasks(todoResponse.todos)
                     }
@@ -57,7 +47,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
     private func fetchTasksFromCoreData() {
         let context = coreDataManager.context
         let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
-        
+
         do {
             let tasksDBO = try context.fetch(fetchRequest)
             DispatchQueue.main.async {
@@ -69,21 +59,42 @@ class TodoListInteractor: TodoListInteractorProtocol {
         }
     }
 
-    private func saveTasksToCoreData(tasks: [Todo]) {
+    func saveTaskToCoreData(task: Todo) {
         let context = coreDataManager.context
-        
-        for todoItem in tasks {
-            let task = TodoDBO(context: context)
-            task.title = todoItem.title
-            task.subtitle = todoItem.subtitle ?? ""
-            task.createdAt = todoItem.createdAt ?? Date()
-            task.isCompleted = todoItem.isCompleted
-        }
-        
+
+        let todo = TodoDBO(context: context)
+        todo.id = task.id ?? ""
+        todo.title = task.title
+        todo.subtitle = task.subtitle ?? ""
+        todo.createdAt = task.createdAt ?? Date()
+        todo.isCompleted = task.isCompleted
+
         do {
             try context.save()
         } catch {
             print(error)
         }
+    }
+
+    func removeTaskFromDB(task: Todo) {
+        let context = coreDataManager.context
+        
+        let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", task.id ?? "" as CVarArg)
+        
+        do {
+            if let todoToDelete = try context.fetch(fetchRequest).first {
+                context.delete(todoToDelete)
+                try context.save()
+            }
+        } catch {
+            print(error)
+        }
+    }
+}
+
+extension TodoListInteractor: DataReceiverInteractorInput {
+    func receiveData(_ todo: Todo) {
+        saveTaskToCoreData(task: todo)
     }
 }

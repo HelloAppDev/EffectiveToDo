@@ -14,20 +14,23 @@ class TodoListRouter: TodoListRouterProtocol {
         let view = TodoListViewController()
         let interactor = TodoListInteractor()
         let router = TodoListRouter()
-        
+
         let presenter = TodoListPresenter(view: view, interactor: interactor, router: router)
-        
+
         view.presenter = presenter
         interactor.presenter = presenter
         router.viewController = view
-        
+
         return view
     }
-    
+
+    func navigateToNewTask() {
+        let todoModule = DetailRouter.createModule()
+        viewController?.navigationController?.pushViewController(todoModule, animated: true)
+    }
+
     func navigateToTaskDetail(with task: Todo) {
-        // Реализация навигации на другой экран
-        // Например, создать TaskDetailViewController и настроить его
-//        let taskDetailViewController = TaskDetailRouter.createModule(with: task)
-//        viewController?.navigationController?.pushViewController(taskDetailViewController, animated: true)
+        let todoModule = DetailRouter.createModule(with: task)
+        viewController?.navigationController?.pushViewController(todoModule, animated: true)
     }
 }

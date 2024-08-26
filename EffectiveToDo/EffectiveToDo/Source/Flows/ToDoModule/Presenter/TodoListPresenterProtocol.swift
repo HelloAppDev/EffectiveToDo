@@ -17,4 +17,6 @@ protocol TodoListPresenterProtocol: AnyObject {
     func viewDidLoad()
     func convertAsTask(_ todoDBO: [TodoDBO]) -> [Todo]
     func didFetchTasks(_ tasks: [Todo])
+    func routeToAddTask()
+    func navigateToDetail(_ todo: Todo)
 }

@@ -39,7 +39,3 @@ class CoreDataManager {
         }
     }
 }
-
-enum StoreError: Error {
-    case notFound
-}

@@ -21,34 +21,52 @@ final class TodoListViewController: UIViewController, TodoListViewProtocol {
             forCellReuseIdentifier: ToDoTableViewCell.reuseId
         )
     }
-    
-    private var mockData = [
-    "First Habit",
-    "Second Habit",
-    "Third Habit",
-    "Fourth Habit",
-    "Fifth Habit",
-    "Sixth Habit"
-    ]
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .cyan
-        self.title = "To-Do list"
-        prepare()
+        prepareUI()
+        setupUI()
+        addBarButtonItem()
         presenter?.viewDidLoad()
     }
+}
 
-    private func prepare() {
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(60)
-            make.leading.trailing.equalToSuperview()
-        }
-    }
-    
+// MARK: - Refresh data
+
+extension TodoListViewController {
     func refreshTodoList() {
         tableView.reloadData()
+    }
+}
+
+// MARK: - Setup UI
+
+extension TodoListViewController {
+    private func prepareUI() {
+        view.backgroundColor = .white
+        self.title = "To-Do list"
+    }
+
+    private func setupUI() {
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(60)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+    }
+
+    private func addBarButtonItem() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "plus"),
+            style: .plain,
+            target: self,
+            action: #selector(addTask)
+        )
+    }
+
+    @objc private func addTask() {
+        presenter?.routeToAddTask()
     }
 }
 
@@ -76,5 +94,11 @@ extension TodoListViewController: UITableViewDataSource {
 extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return ToDoTableViewCell.sizeThatFits(size: tableView.frame.size).height
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let task = presenter?.tasks[indexPath.row] {
+            presenter?.navigateToDetail(task)
+        }
     }
 }
