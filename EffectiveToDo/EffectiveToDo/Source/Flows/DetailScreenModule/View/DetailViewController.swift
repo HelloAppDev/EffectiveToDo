@@ -15,6 +15,8 @@ private enum Constants {
     static let titleTFPlaceholder = "Enter title"
     static let subtitleTFPlaceholder = "Enter subtitle"
     static let saveButtonTitle = "Save"
+    static let error = "Ошибка"
+    static let errorText = "Задайте название действию."
     static let completeImage = UIImage(named: "сompleted")
     static let notCompleteImage = UIImage(named: "notCompleted")
     static let titleFont: UIFont = .boldSystemFont(ofSize: 16)
@@ -158,9 +160,13 @@ extension DetailViewController {
 
     @objc private func saveButtonTapped() {
         guard let title = titleTextField.text,
-              !title.isEmpty else { return }
+                  !title.isEmpty else {
+            showAlertForEmptyTitle()
+            return
+        }
+
         let subtitle = subtitleTextField.text
-        
+
         if let task = presenter.task {
             let todo = task.changeParams(title: title,
                                          subtitle: subtitle,
@@ -178,6 +184,19 @@ extension DetailViewController {
 
             presenter.saveTodo(with: newTodo)
         }
+    }
+
+    private func showAlertForEmptyTitle() {
+        let alertController = UIAlertController(
+            title: Constants.error,
+            message: Constants.errorText,
+            preferredStyle: .alert
+        )
+
+        let okAction = UIAlertAction(title: "Ок", style: .default, handler: nil)
+        alertController.addAction(okAction)
+
+        present(alertController, animated: true, completion: nil)
     }
 }
 
