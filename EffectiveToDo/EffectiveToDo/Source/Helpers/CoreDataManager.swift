@@ -14,7 +14,7 @@ class CoreDataManager {
     private init() {}
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "Task")
+        let container = NSPersistentContainer(name: "EffectiveToDo")
         container.loadPersistentStores { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("\(error), \(error.userInfo)")
@@ -38,8 +38,4 @@ class CoreDataManager {
             }
         }
     }
-}
-
-enum StoreError: Error {
-    case notFound
 }
