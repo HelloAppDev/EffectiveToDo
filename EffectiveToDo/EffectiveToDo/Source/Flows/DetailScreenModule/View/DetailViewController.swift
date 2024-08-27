@@ -45,12 +45,14 @@ class DetailViewController: UIViewController {
         $0.borderStyle = .roundedRect
         $0.placeholder = Constants.titleTFPlaceholder
         $0.font = Constants.textFieldFont
+        $0.delegate = self
     }
 
     private lazy var subtitleTextField = UITextField().forAutolayout().applying {
         $0.borderStyle = .roundedRect
         $0.placeholder = Constants.subtitleTFPlaceholder
         $0.font = Constants.textFieldFont
+        $0.delegate = self
     }
 
     private lazy var completedButton = UIButton().forAutolayout().applying {
@@ -62,7 +64,8 @@ class DetailViewController: UIViewController {
         $0.tintColor = .black
         $0.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         $0.layer.cornerRadius = 12
-        $0.layer.backgroundColor = UIColor.blue.cgColor
+        $0.setBackgroundColor(color: .blue, forState: .normal)
+        $0.setBackgroundColor(color: .lightGray, forState: .disabled)
     }
 
     private var isCompleted = false {
@@ -71,8 +74,11 @@ class DetailViewController: UIViewController {
         }
     }
 
+    private var task: Todo?
+
     init(presenter: DetailPresenterProtocol) {
         self.presenter = presenter
+        self.task = presenter.task
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -85,6 +91,7 @@ class DetailViewController: UIViewController {
         setupViews()
         setupConstraints()
         updateContent()
+        hideKeyBoardOnTap()
     }
 }
 
@@ -148,38 +155,47 @@ extension DetailViewController {
                                  ? Constants.completeImage
                                  : Constants.notCompleteImage,
                                  for: .normal)
+        self.task = task?.changeParams(title: task?.title ?? "",
+                                       subtitle: task?.subtitle,
+                                       completed: isCompleted)
+        saveButton.isEnabled = self.task != presenter.task
     }
 }
 
 // MARK: - User interactive methods
 
-extension DetailViewController {
+extension DetailViewController: DetailViewProtocol {
     @objc private func completedButtonTapped() {
         isCompleted.toggle()
     }
 
     @objc private func saveButtonTapped() {
-        guard let title = titleTextField.text,
-                  !title.isEmpty else {
+        guard let title = titleTextField.text, !title.isEmpty else {
             showAlertForEmptyTitle()
             return
         }
 
         let subtitle = subtitleTextField.text
-        
+
         let todo: Todo
-        
+
         if let task = presenter.task {
             todo = task.changeParams(
                 title: title,
-                subtitle: subtitle,
+                subtitle: subtitle?.isEmpty == true ? nil : subtitle,
+                completed: isCompleted
+            )
+        } else if let task = self.task {
+            todo = task.changeParams(
+                title: title,
+                subtitle: subtitle?.isEmpty == true ? nil : subtitle,
                 completed: isCompleted
             )
         } else {
             todo = Todo(
                 id: abs(UUID().uuidString.hashValue),
                 title: title,
-                subtitle: subtitle,
+                subtitle: subtitle?.isEmpty == true ? nil : subtitle,
                 createdAt: Date(),
                 isCompleted: isCompleted
             )
@@ -200,6 +216,11 @@ extension DetailViewController {
 
         present(alertController, animated: true, completion: nil)
     }
+    
+    private func updateSaveButtonState() {
+        let hasChanges = !(self.task == presenter.task)
+        saveButton.isEnabled = hasChanges
+    }
 }
 
 // MARK: - Update content
@@ -210,9 +231,49 @@ extension DetailViewController {
         subtitleTextField.text = presenter.task?.subtitle
         isCompleted = presenter.task?.isCompleted ?? false
         completedButton.isSelected = isCompleted
+        saveButton.isEnabled = self.task != presenter.task
     }
 }
 
-extension DetailViewController: DetailViewProtocol {
-}
+// MARK: - UITextFieldDelegate
 
+extension DetailViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+           guard let currentText = textField.text as NSString? else { return true }
+
+           let updatedText = currentText.replacingCharacters(in: range, with: string)
+
+           if task == nil {
+               task = Todo(
+                   id: abs(UUID().uuidString.hashValue),
+                   title: textField == titleTextField ? updatedText : "",
+                   subtitle: textField == subtitleTextField ? updatedText : nil,
+                   createdAt: Date(),
+                   isCompleted: false
+               )
+           } else {
+               if textField == titleTextField {
+                   task = task?.changeParams(
+                       title: updatedText,
+                       subtitle: task?.subtitle,
+                       completed: task?.isCompleted ?? false
+                   )
+               } else if textField == subtitleTextField {
+                   task = task?.changeParams(
+                       title: task?.title ?? "",
+                       subtitle: updatedText.isEmpty ? nil : updatedText,
+                       completed: task?.isCompleted ?? false
+                   )
+               }
+           }
+
+           updateSaveButtonState()
+
+           return true
+       }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.dismissKeyboard()
+        return true
+    }
+}

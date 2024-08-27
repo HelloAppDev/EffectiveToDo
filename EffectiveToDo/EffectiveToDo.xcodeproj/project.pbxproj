@@ -43,6 +43,8 @@
 		1596BB582C7BF5E70079D573 /* DetailInteractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB572C7BF5E70079D573 /* DetailInteractorProtocol.swift */; };
 		1596BB5A2C7BF6270079D573 /* DetailRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB592C7BF6270079D573 /* DetailRouter.swift */; };
 		1596BB5C2C7BF65C0079D573 /* DetailRouterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */; };
+		1596BB5E2C7E07EE0079D573 /* UIButtonExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5D2C7E07EE0079D573 /* UIButtonExtensions.swift */; };
+		1596BB602C7E162E0079D573 /* UIViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5F2C7E162E0079D573 /* UIViewControllerExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +103,8 @@
 		1596BB572C7BF5E70079D573 /* DetailInteractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailInteractorProtocol.swift; sourceTree = "<group>"; };
 		1596BB592C7BF6270079D573 /* DetailRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRouter.swift; sourceTree = "<group>"; };
 		1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRouterProtocol.swift; sourceTree = "<group>"; };
+		1596BB5D2C7E07EE0079D573 /* UIButtonExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExtensions.swift; sourceTree = "<group>"; };
+		1596BB5F2C7E162E0079D573 /* UIViewControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +221,8 @@
 				150774002C7B0C8F00CE7044 /* UIViewExtension.swift */,
 				150774022C7B0CC600CE7044 /* NSObjectProtocol+Additions.swift */,
 				1596BB212C7B359C0079D573 /* StringExtensions.swift */,
+				1596BB5D2C7E07EE0079D573 /* UIButtonExtensions.swift */,
+				1596BB5F2C7E162E0079D573 /* UIViewControllerExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -518,11 +524,13 @@
 				1596BB322C7B869A0079D573 /* TodoListRouterProtocol.swift in Sources */,
 				1596BB302C7B86370079D573 /* TodoListViewProtocol.swift in Sources */,
 				1596BB512C7BF54D0079D573 /* DetailPresenter.swift in Sources */,
+				1596BB5E2C7E07EE0079D573 /* UIButtonExtensions.swift in Sources */,
 				1596BB4F2C7BF4E40079D573 /* DetailViewProtocol.swift in Sources */,
 				1596BB4D2C7BF49A0079D573 /* DetailViewController.swift in Sources */,
 				1596BB412C7B9FC90079D573 /* TodoListPresenterProtocol.swift in Sources */,
 				1596BB3A2C7B8AC00079D573 /* TodoDBO+CoreDataProperties.swift in Sources */,
 				150773D42C78CE8200CE7044 /* EffectiveToDo.xcdatamodeld in Sources */,
+				1596BB602C7E162E0079D573 /* UIViewControllerExtensions.swift in Sources */,
 				1596BB2E2C7B83EE0079D573 /* TodoListPresenter.swift in Sources */,
 				150773CA2C78CE8200CE7044 /* AppDelegate.swift in Sources */,
 				1596BB252C7B7E840079D573 /* LaunchManager.swift in Sources */,

@@ -53,6 +53,16 @@ extension Todo {
     }
 }
 
+// MARK: - Compare
+
+extension Todo: Equatable {    
+    static func == (lhs: Todo, rhs: Todo) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.subtitle == rhs.subtitle &&
+        lhs.isCompleted == rhs.isCompleted
+    }
+}
+
 // MARK: - Init decoder
 
 extension Todo {
