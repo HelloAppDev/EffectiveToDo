@@ -37,6 +37,16 @@ struct Todo: Codable {
         self.createdAt = createdAt
         self.isCompleted = isCompleted
     }
+    
+    init(title: String,
+         subtitle: String?,
+         isCompleted: Bool) {
+        self.id = 0
+        self.title = title
+        self.subtitle = subtitle
+        self.createdAt = Date()
+        self.isCompleted = isCompleted
+    }
 }
 
 // MARK: - Change existed task
@@ -50,6 +60,16 @@ extension Todo {
                     subtitle: subtitle,
                     createdAt: createdAt ?? Date(),
                     isCompleted: completed)
+    }
+}
+
+// MARK: - Compare
+
+extension Todo: Equatable {    
+    static func == (lhs: Todo, rhs: Todo) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.subtitle == rhs.subtitle &&
+        lhs.isCompleted == rhs.isCompleted
     }
 }
 

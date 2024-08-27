@@ -14,9 +14,8 @@ private enum Constants {
     static let completeText = "Complete task"
     static let titleTFPlaceholder = "Enter title"
     static let subtitleTFPlaceholder = "Enter subtitle"
-    static let saveButtonTitle = "Save"
     static let error = "Ошибка"
-    static let errorText = "Задайте название действию."
+    static let saveButtonTitle = "Save"
     static let completeImage = UIImage(named: "сompleted")
     static let notCompleteImage = UIImage(named: "notCompleted")
     static let titleFont: UIFont = .boldSystemFont(ofSize: 16)
@@ -25,6 +24,8 @@ private enum Constants {
 
 class DetailViewController: UIViewController {
     var presenter: DetailPresenterProtocol
+
+    // MARK: Private properties
 
     private lazy var titleLabel = UILabel().forAutolayout().applying {
         $0.text = Constants.titleText
@@ -45,12 +46,14 @@ class DetailViewController: UIViewController {
         $0.borderStyle = .roundedRect
         $0.placeholder = Constants.titleTFPlaceholder
         $0.font = Constants.textFieldFont
+        $0.delegate = self
     }
 
     private lazy var subtitleTextField = UITextField().forAutolayout().applying {
         $0.borderStyle = .roundedRect
         $0.placeholder = Constants.subtitleTFPlaceholder
         $0.font = Constants.textFieldFont
+        $0.delegate = self
     }
 
     private lazy var completedButton = UIButton().forAutolayout().applying {
@@ -62,7 +65,8 @@ class DetailViewController: UIViewController {
         $0.tintColor = .black
         $0.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         $0.layer.cornerRadius = 12
-        $0.layer.backgroundColor = UIColor.blue.cgColor
+        $0.setBackgroundColor(color: .blue, forState: .normal)
+        $0.setBackgroundColor(color: .lightGray, forState: .disabled)
     }
 
     private var isCompleted = false {
@@ -71,8 +75,13 @@ class DetailViewController: UIViewController {
         }
     }
 
+    var task: Todo?
+
+    // MARK: Lifecycle
+
     init(presenter: DetailPresenterProtocol) {
         self.presenter = presenter
+        self.task = presenter.task
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -84,7 +93,22 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupConstraints()
-        updateContent()
+        presenter.viewDidLoad()
+        hideKeyBoardOnTap()
+        registerNotifications()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 }
 
@@ -148,48 +172,64 @@ extension DetailViewController {
                                  ? Constants.completeImage
                                  : Constants.notCompleteImage,
                                  for: .normal)
+        self.task = task?.changeParams(title: task?.title ?? "",
+                                       subtitle: task?.subtitle,
+                                       completed: isCompleted)
+        saveButton.isEnabled = self.task != presenter.task
+    }
+}
+
+// MARK: - Work with Notification center & handle keyboard displaying
+
+extension DetailViewController {
+    private func registerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        adjustSaveButtonPosition(showing: true, notification: notification)
+    }
+
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        adjustSaveButtonPosition(showing: false, notification: notification)
+    }
+
+    private func adjustSaveButtonPosition(showing: Bool, notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval else { return }
+
+        let adjustmentHeight = showing ? -(keyboardFrame.height + 10) : -80
+
+        UIView.animate(withDuration: animationDuration) {
+            self.saveButton.snp.updateConstraints { make in
+                make.bottom.equalToSuperview().offset(adjustmentHeight)
+            }
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
 // MARK: - User interactive methods
 
-extension DetailViewController {
+extension DetailViewController: DetailViewProtocol {
     @objc private func completedButtonTapped() {
         isCompleted.toggle()
     }
 
     @objc private func saveButtonTapped() {
-        guard let title = titleTextField.text,
-                  !title.isEmpty else {
-            showAlertForEmptyTitle()
-            return
-        }
-
-        let subtitle = subtitleTextField.text
-
-        if let task = presenter.task {
-            let todo = task.changeParams(title: title,
-                                         subtitle: subtitle,
-                                         completed: isCompleted)
-
-            presenter.saveTodo(with: todo)
-        } else {
-            let newTodo = Todo(
-                id: abs(UUID().uuidString.hashValue),
-                title: title,
-                subtitle: subtitle,
-                createdAt: Date(),
-                isCompleted: isCompleted
-            )
-
-            presenter.saveTodo(with: newTodo)
-        }
+        presenter.saveButtonTapped(
+            title: titleTextField.text,
+            subtitle: subtitleTextField.text,
+            isCompleted: isCompleted
+        )
     }
 
-    private func showAlertForEmptyTitle() {
+    func displayError(_ message: String) {
         let alertController = UIAlertController(
             title: Constants.error,
-            message: Constants.errorText,
+            message: message,
             preferredStyle: .alert
         )
 
@@ -198,19 +238,62 @@ extension DetailViewController {
 
         present(alertController, animated: true, completion: nil)
     }
-}
 
-// MARK: - Update content
-
-extension DetailViewController {
-    private func updateContent() {
-        titleTextField.text = presenter.task?.title
-        subtitleTextField.text = presenter.task?.subtitle
-        isCompleted = presenter.task?.isCompleted ?? false
-        completedButton.isSelected = isCompleted
+    private func updateSaveButtonState() {
+        let hasChanges = !(self.task == presenter.task)
+        saveButton.isEnabled = hasChanges
     }
 }
 
-extension DetailViewController: DetailViewProtocol {
+// MARK: - Display Task
+
+extension DetailViewController {
+    func displayTask(_ task: Todo?) {
+        titleTextField.text = task?.title
+        subtitleTextField.text = task?.subtitle
+        isCompleted = task?.isCompleted ?? false
+        completedButton.isSelected = isCompleted
+        saveButton.isEnabled = self.task != task
+    }
 }
 
+// MARK: - UITextFieldDelegate
+
+extension DetailViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+           guard let currentText = textField.text as NSString? else { return true }
+
+           let updatedText = currentText.replacingCharacters(in: range, with: string)
+
+        if task == nil {
+            task = Todo(
+                title: textField == titleTextField ? updatedText : "",
+                subtitle: textField == subtitleTextField ? updatedText : nil,
+                isCompleted: false
+            )
+        } else {
+            if textField == titleTextField {
+                task = task?.changeParams(
+                    title: updatedText,
+                    subtitle: task?.subtitle,
+                    completed: task?.isCompleted ?? false
+                )
+            } else if textField == subtitleTextField {
+                task = task?.changeParams(
+                    title: task?.title ?? "",
+                    subtitle: updatedText.isEmpty ? nil : updatedText,
+                    completed: task?.isCompleted ?? false
+                )
+            }
+        }
+
+           updateSaveButtonState()
+
+           return true
+       }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.dismissKeyboard()
+        return true
+    }
+}

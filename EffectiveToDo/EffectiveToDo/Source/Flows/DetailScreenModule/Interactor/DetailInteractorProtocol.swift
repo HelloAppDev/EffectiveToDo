@@ -7,4 +7,6 @@
 
 import Foundation
 
-protocol DetailInteractorProtocol: AnyObject { }
+protocol DetailInteractorProtocol: AnyObject {
+    func getTask(by title: String, subtitle: String?, isCompleted: Bool) -> Todo
+}

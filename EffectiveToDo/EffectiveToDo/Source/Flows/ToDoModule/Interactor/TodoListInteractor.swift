@@ -17,8 +17,9 @@ protocol TodoModuleInput: AnyObject {
 }
 
 class TodoListInteractor: TodoListInteractorProtocol {
-    var presenter: TodoListPresenterProtocol?
+    weak var presenter: TodoListPresenterProtocol?
     let coreDataManager = CoreDataManager.shared
+    let globalqueue = DispatchQueue.global(qos: .background)
 
     func fetchTasks() {
         if LaunchManager.shared.isFirstLaunch {
@@ -29,76 +30,86 @@ class TodoListInteractor: TodoListInteractorProtocol {
     }
 
     func loadTasksFromCoreData() {
-        let context = coreDataManager.context
-        let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
-        
-        do {
-            let tasksDBO = try context.fetch(fetchRequest)
-            DispatchQueue.main.async {
-                let tasks = self.presenter?.convertAsTask(tasksDBO)
-                self.presenter?.didFetchTasks(tasks ?? [])
+        globalqueue.async { [weak self] in
+            guard let self else { return }
+            let context = self.coreDataManager.context
+            let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
+            
+            do {
+                let tasksDBO = try context.fetch(fetchRequest)
+                let tasks = self.presenter?.convertAsTask(tasksDBO) ?? []
+                DispatchQueue.main.async {
+                    self.presenter?.didFetchTasks(tasks)
+                }
+            } catch {
+                // TODO: handle error
+                print(error)
             }
-        } catch {
-            print(error)
         }
     }
 
     func saveTaskToCoreData(task: Todo) {
-        let context = coreDataManager.context
+        globalqueue.async { [weak self] in
+            guard let self else { return }
+            let context = self.coreDataManager.context
+            let todo = TodoDBO(context: context)
+            todo.update(by: task)
 
-        let todo = TodoDBO(context: context)
-        todo.id = Int64(task.id)
-        todo.title = task.title
-        todo.subtitle = task.subtitle ?? ""
-        todo.createdAt = task.createdAt ?? Date()
-        todo.isCompleted = task.isCompleted
-
-        do {
-            try context.save()
-        } catch {
-            print(error)
+            do {
+                try context.save()
+            } catch {
+                // TODO: handle error
+                print(error)
+            }
         }
     }
 
-    func saveOrUpdateTask(_ task: Todo) {
-        let context = coreDataManager.context
+    func saveOrUpdateTask(_ task: Todo, completion: @escaping () -> Void) {
+        globalqueue.async { [weak self] in
+            guard let self else { return }
+            let context = self.coreDataManager.context
+            let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", NSNumber(value: task.id))
 
-        let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", NSNumber(value: task.id))
+            do {
+                let results = try context.fetch(fetchRequest)
 
-        do {
-            let results = try context.fetch(fetchRequest)
+                if let todoToUpdate = results.first {
+                    todoToUpdate.update(by: task)
+                } else {
+                    let newTodo = TodoDBO(context: context)
+                    newTodo.update(by: task)
+                }
 
-            if let todoToUpdate = results.first {
-                todoToUpdate.update(by: task)
-            } else {
-                let newTodo = TodoDBO(context: context)
-                newTodo.id = Int64(task.id)
-                newTodo.title = task.title
-                newTodo.subtitle = task.subtitle ?? ""
-                newTodo.createdAt = task.createdAt ?? Date()
-                newTodo.isCompleted = task.isCompleted
+                try context.save()
+
+                DispatchQueue.main.async {
+                    completion()
+                }
+            } catch {
+                // TODO: handle error
+                print(error)
             }
-
-            try context.save()
-        } catch {
-            print(error)
         }
     }
 
     func deleteTask(_ task: Todo) {
-        let context = coreDataManager.context
+        globalqueue.async { [weak self] in
+            guard let self else { return }
+            let context = self.coreDataManager.context
 
-        let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", NSNumber(value: task.id))
+            let fetchRequest: NSFetchRequest<TodoDBO> = TodoDBO.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", NSNumber(value: task.id))
 
-        do {
-            if let todoToDelete = try context.fetch(fetchRequest).first {
-                context.delete(todoToDelete)
-                try context.save()
+            do {
+                if let todoToDelete = try context.fetch(fetchRequest).first {
+                    context.delete(todoToDelete)
+                    try context.save()
+                }
+            } catch {
+                // TODO: handle error
+                print(error)
             }
-        } catch {
-            print(error)
         }
     }
 
@@ -117,6 +128,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
         do {
             try context.save()
         } catch {
+            // TODO: handle error
             print(error)
         }
     }
@@ -126,16 +138,17 @@ class TodoListInteractor: TodoListInteractorProtocol {
 
 extension TodoListInteractor {
     private func fetchTasksFromAPI() {
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        globalqueue.async { [weak self] in
+            guard let self else { return }
             guard let url = URL(string: Constants.url) else { return }
-            let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            let task = URLSession.shared.dataTask(with: url) { data, _, error in
                 if let error = error {
+                    // TODO: handle error
                     print(error)
                     return
                 }
 
-                guard let data = data,
-                      let self else { return }
+                guard let data = data else { return }
                 do {
                     let jsonDecoder = JSONDecoder()
                     let todoResponse = try jsonDecoder.decode(TodoResponse.self, from: data)
@@ -144,6 +157,7 @@ extension TodoListInteractor {
                         self.presenter?.didFetchTasks(todoResponse.todos)
                     }
                 } catch let jsonError {
+                    // TODO: handle error
                     print(jsonError)
                 }
             }
@@ -156,7 +170,8 @@ extension TodoListInteractor {
 
 extension TodoListInteractor: TodoModuleInput {
     func receiveDataFromDetailModule(task: Todo) {
-        saveOrUpdateTask(task)
-        loadTasksFromCoreData()
+        saveOrUpdateTask(task) { [weak self] in
+            self?.fetchTasks()
+        }
     }
 }

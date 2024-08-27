@@ -8,7 +8,7 @@
 import Foundation
 
 protocol DetailPresenterProtocol: AnyObject {
-    var task: Todo? { get set }
-
-    func saveTodo(with task: Todo)
+    var task: Todo? { get }
+    func viewDidLoad()
+    func saveButtonTapped(title: String?, subtitle: String?, isCompleted: Bool)
 }

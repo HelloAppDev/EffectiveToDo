@@ -18,6 +18,7 @@ class DetailRouter: DetailRouterProtocol {
 
     static func createModule(with task: Todo? = nil, input: TodoModuleInput?) -> UIViewController {
         let presenter = DetailPresenter()
+        presenter.task = task
         let view = DetailViewController(presenter: presenter)
         let interactor = DetailInteractor()
         let router = DetailRouter()
@@ -25,7 +26,7 @@ class DetailRouter: DetailRouterProtocol {
         presenter.view = view
         presenter.interactor = interactor
         presenter.router = router
-        presenter.task = task
+        interactor.presenter = presenter
         router.viewController = view
         router.firstModuleInput = input
 

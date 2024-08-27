@@ -35,7 +35,9 @@ final class TodoListViewController: UIViewController {
 
 extension TodoListViewController: TodoListViewProtocol {
     func refreshTodoList() {
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
 
