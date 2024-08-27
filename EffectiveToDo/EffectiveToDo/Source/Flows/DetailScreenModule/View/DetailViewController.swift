@@ -14,9 +14,8 @@ private enum Constants {
     static let completeText = "Complete task"
     static let titleTFPlaceholder = "Enter title"
     static let subtitleTFPlaceholder = "Enter subtitle"
-    static let saveButtonTitle = "Save"
     static let error = "Ошибка"
-    static let errorText = "Задайте название действию."
+    static let saveButtonTitle = "Save"
     static let completeImage = UIImage(named: "сompleted")
     static let notCompleteImage = UIImage(named: "notCompleted")
     static let titleFont: UIFont = .boldSystemFont(ofSize: 16)
@@ -26,6 +25,8 @@ private enum Constants {
 class DetailViewController: UIViewController {
     var presenter: DetailPresenterProtocol
 
+    // MARK: Private properties
+    
     private lazy var titleLabel = UILabel().forAutolayout().applying {
         $0.text = Constants.titleText
         $0.font = Constants.titleFont
@@ -74,8 +75,10 @@ class DetailViewController: UIViewController {
         }
     }
 
-    private var task: Todo?
+    var task: Todo?
 
+    // MARK: Lifecycle
+    
     init(presenter: DetailPresenterProtocol) {
         self.presenter = presenter
         self.task = presenter.task
@@ -90,14 +93,22 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupConstraints()
-        updateContent()
+        presenter.viewDidLoad()
         hideKeyBoardOnTap()
         registerNotifications()
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 }
 
@@ -154,7 +165,23 @@ extension DetailViewController {
             make.height.equalTo(46)
         }
     }
-    
+
+    private func toggleComplete() {
+        completedButton.isSelected = isCompleted
+        completedButton.setImage(isCompleted
+                                 ? Constants.completeImage
+                                 : Constants.notCompleteImage,
+                                 for: .normal)
+        self.task = task?.changeParams(title: task?.title ?? "",
+                                       subtitle: task?.subtitle,
+                                       completed: isCompleted)
+        saveButton.isEnabled = self.task != presenter.task
+    }
+}
+
+// MARK: - Work with Notification center & handle keyboard displaying
+
+extension DetailViewController {
     private func registerNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -182,18 +209,6 @@ extension DetailViewController {
             self.view.layoutIfNeeded()
         }
     }
-
-    private func toggleComplete() {
-        completedButton.isSelected = isCompleted
-        completedButton.setImage(isCompleted
-                                 ? Constants.completeImage
-                                 : Constants.notCompleteImage,
-                                 for: .normal)
-        self.task = task?.changeParams(title: task?.title ?? "",
-                                       subtitle: task?.subtitle,
-                                       completed: isCompleted)
-        saveButton.isEnabled = self.task != presenter.task
-    }
 }
 
 // MARK: - User interactive methods
@@ -204,44 +219,17 @@ extension DetailViewController: DetailViewProtocol {
     }
 
     @objc private func saveButtonTapped() {
-        guard let title = titleTextField.text, !title.isEmpty else {
-            showAlertForEmptyTitle()
-            return
-        }
-
-        let subtitle = subtitleTextField.text
-
-        let todo: Todo
-
-        if let task = presenter.task {
-            todo = task.changeParams(
-                title: title,
-                subtitle: subtitle?.isEmpty == true ? nil : subtitle,
-                completed: isCompleted
-            )
-        } else if let task = self.task {
-            todo = task.changeParams(
-                title: title,
-                subtitle: subtitle?.isEmpty == true ? nil : subtitle,
-                completed: isCompleted
-            )
-        } else {
-            todo = Todo(
-                id: abs(UUID().uuidString.hashValue),
-                title: title,
-                subtitle: subtitle?.isEmpty == true ? nil : subtitle,
-                createdAt: Date(),
-                isCompleted: isCompleted
-            )
-        }
-
-        presenter.saveTodo(with: todo)
+        presenter.saveButtonTapped(
+            title: titleTextField.text,
+            subtitle: subtitleTextField.text,
+            isCompleted: isCompleted
+        )
     }
 
-    private func showAlertForEmptyTitle() {
+    func displayError(_ message: String) {
         let alertController = UIAlertController(
             title: Constants.error,
-            message: Constants.errorText,
+            message: message,
             preferredStyle: .alert
         )
 
@@ -250,22 +238,22 @@ extension DetailViewController: DetailViewProtocol {
 
         present(alertController, animated: true, completion: nil)
     }
-    
+
     private func updateSaveButtonState() {
         let hasChanges = !(self.task == presenter.task)
         saveButton.isEnabled = hasChanges
     }
 }
 
-// MARK: - Update content
+// MARK: - Display Task
 
 extension DetailViewController {
-    private func updateContent() {
-        titleTextField.text = presenter.task?.title
-        subtitleTextField.text = presenter.task?.subtitle
-        isCompleted = presenter.task?.isCompleted ?? false
+    func displayTask(_ task: Todo?) {
+        titleTextField.text = task?.title
+        subtitleTextField.text = task?.subtitle
+        isCompleted = task?.isCompleted ?? false
         completedButton.isSelected = isCompleted
-        saveButton.isEnabled = self.task != presenter.task
+        saveButton.isEnabled = self.task != task
     }
 }
 
@@ -277,29 +265,27 @@ extension DetailViewController: UITextFieldDelegate {
 
            let updatedText = currentText.replacingCharacters(in: range, with: string)
 
-           if task == nil {
-               task = Todo(
-                   id: abs(UUID().uuidString.hashValue),
-                   title: textField == titleTextField ? updatedText : "",
-                   subtitle: textField == subtitleTextField ? updatedText : nil,
-                   createdAt: Date(),
-                   isCompleted: false
-               )
-           } else {
-               if textField == titleTextField {
-                   task = task?.changeParams(
-                       title: updatedText,
-                       subtitle: task?.subtitle,
-                       completed: task?.isCompleted ?? false
-                   )
-               } else if textField == subtitleTextField {
-                   task = task?.changeParams(
-                       title: task?.title ?? "",
-                       subtitle: updatedText.isEmpty ? nil : updatedText,
-                       completed: task?.isCompleted ?? false
-                   )
-               }
-           }
+        if task == nil {
+            task = Todo(
+                title: textField == titleTextField ? updatedText : "",
+                subtitle: textField == subtitleTextField ? updatedText : nil,
+                isCompleted: false
+            )
+        } else {
+            if textField == titleTextField {
+                task = task?.changeParams(
+                    title: updatedText,
+                    subtitle: task?.subtitle,
+                    completed: task?.isCompleted ?? false
+                )
+            } else if textField == subtitleTextField {
+                task = task?.changeParams(
+                    title: task?.title ?? "",
+                    subtitle: updatedText.isEmpty ? nil : updatedText,
+                    completed: task?.isCompleted ?? false
+                )
+            }
+        }
 
            updateSaveButtonState()
 

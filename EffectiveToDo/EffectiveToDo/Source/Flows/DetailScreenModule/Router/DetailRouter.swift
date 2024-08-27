@@ -26,6 +26,7 @@ class DetailRouter: DetailRouterProtocol {
         presenter.view = view
         presenter.interactor = interactor
         presenter.router = router
+        interactor.presenter = presenter
         router.viewController = view
         router.firstModuleInput = input
 

@@ -37,6 +37,16 @@ struct Todo: Codable {
         self.createdAt = createdAt
         self.isCompleted = isCompleted
     }
+    
+    init(title: String,
+         subtitle: String?,
+         isCompleted: Bool) {
+        self.id = 0
+        self.title = title
+        self.subtitle = subtitle
+        self.createdAt = Date()
+        self.isCompleted = isCompleted
+    }
 }
 
 // MARK: - Change existed task
