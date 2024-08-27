@@ -24,12 +24,12 @@ class TodoListRouter: TodoListRouterProtocol {
         return view
     }
 
-    func navigateToNewTask(input: FirstModuleInput) {
+    func navigateToNewTask(input: TodoModuleInput) {
         let todoModule = DetailRouter.createModule(input: input)
         viewController?.navigationController?.pushViewController(todoModule, animated: true)
     }
 
-    func navigateToTaskDetail(with task: Todo, input: FirstModuleInput) {
+    func navigateToTaskDetail(with task: Todo, input: TodoModuleInput) {
         let todoModule = DetailRouter.createModule(with: task, input: input)
         viewController?.navigationController?.pushViewController(todoModule, animated: true)
     }

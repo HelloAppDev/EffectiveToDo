@@ -1,5 +1,5 @@
 //
-//  ToDoPresenter.swift
+//  TodoListPresenter.swift
 //  EffectiveToDo
 //
 //  Created by Мария Изюменко on 25.08.2024.
@@ -28,7 +28,7 @@ class TodoListPresenter: TodoListPresenterProtocol {
 
     func convertAsTask(_ todoDBO: [TodoDBO]) -> [Todo] {
         return todoDBO.map { todoDBO in
-            Todo(id: todoDBO.id,
+            Todo(id: Int(todoDBO.id),
                  title: todoDBO.title,
                  subtitle: todoDBO.subtitle,
                  createdAt: todoDBO.createdAt,
@@ -42,14 +42,14 @@ class TodoListPresenter: TodoListPresenterProtocol {
     }
 
     func routeToAddTask() {
-        router.navigateToNewTask(input: interactor as! FirstModuleInput)
+        router.navigateToNewTask(input: interactor as! TodoModuleInput)
     }
 
     func navigateToDetail(_ todo: Todo) {
-        router.navigateToTaskDetail(with: todo, input: interactor as! FirstModuleInput)
+        router.navigateToTaskDetail(with: todo, input: interactor as! TodoModuleInput)
     }
 
-    func deleteTask(by id: String?) {
+    func deleteTask(by id: Int) {
         guard let taskIndex = tasks.firstIndex(where: { $0.id == id }),
         let task = tasks.first(where: { $0.id == id }) else { return }
         tasks.remove(at: taskIndex)

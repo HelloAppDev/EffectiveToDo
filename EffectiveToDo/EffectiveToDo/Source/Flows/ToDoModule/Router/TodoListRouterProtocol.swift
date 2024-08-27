@@ -8,6 +8,6 @@
 import Foundation
 
 protocol TodoListRouterProtocol: AnyObject {
-    func navigateToNewTask(input: FirstModuleInput)
-    func navigateToTaskDetail(with task: Todo, input: FirstModuleInput)
+    func navigateToNewTask(input: TodoModuleInput)
+    func navigateToTaskDetail(with task: Todo, input: TodoModuleInput)
 }

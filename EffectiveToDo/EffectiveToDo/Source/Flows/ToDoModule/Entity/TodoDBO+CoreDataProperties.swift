@@ -14,7 +14,7 @@ extension TodoDBO {
         return NSFetchRequest<TodoDBO>(entityName: "TodoDBO")
     }
 
-    @NSManaged public var id: String?
+    @NSManaged public var id: Int64
     @NSManaged public var title: String
     @NSManaged public var subtitle: String?
     @NSManaged public var createdAt: Date?
@@ -24,7 +24,7 @@ extension TodoDBO {
 extension TodoDBO {
     func asTask() -> Todo {
         return Todo(
-            id: id,
+            id: Int(id),
             title: title,
             subtitle: subtitle,
             createdAt: createdAt,
@@ -33,7 +33,7 @@ extension TodoDBO {
     }
 
     func update(by task: Todo) {
-        self.id = task.id
+        self.id = Int64(task.id)
         self.title = task.title
         self.subtitle = task.subtitle
         self.createdAt = task.createdAt

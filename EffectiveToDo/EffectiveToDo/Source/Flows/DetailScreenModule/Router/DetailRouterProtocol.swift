@@ -8,7 +8,7 @@
 import Foundation
 
 protocol DetailRouterProtocol: AnyObject {
-    var firstModuleInput: FirstModuleInput? { get set }
+    var firstModuleInput: TodoModuleInput? { get set }
 
     func navigateBack(with task: Todo)
 }

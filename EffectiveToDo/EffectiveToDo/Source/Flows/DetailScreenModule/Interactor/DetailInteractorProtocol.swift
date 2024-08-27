@@ -7,6 +7,4 @@
 
 import Foundation
 
-protocol DetailInteractorProtocol: AnyObject {
-    func saveTodo(_ todo: Todo)
-}
+protocol DetailInteractorProtocol: AnyObject { }

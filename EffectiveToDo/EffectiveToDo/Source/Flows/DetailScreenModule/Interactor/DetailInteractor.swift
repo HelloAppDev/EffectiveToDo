@@ -7,11 +7,4 @@
 
 import Foundation
 
-class DetailInteractor: DetailInteractorProtocol {
-    func saveTodo(_ todo: Todo) {
-    }
-}
-
-protocol DataReceiverInteractorInput: AnyObject {
-    func receiveData(_ todo: Todo)
-}
+class DetailInteractor: DetailInteractorProtocol { }

@@ -17,8 +17,8 @@ final class TodoListViewController: UIViewController {
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
         $0.register(
-            ToDoTableViewCell.self,
-            forCellReuseIdentifier: ToDoTableViewCell.reuseId
+            TodoTableViewCell.self,
+            forCellReuseIdentifier: TodoTableViewCell.reuseId
         )
     }
 
@@ -78,7 +78,7 @@ extension TodoListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoTableViewCell.reuseId) as? ToDoTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TodoTableViewCell.reuseId) as? TodoTableViewCell else {
             return UITableViewCell()
         }
 
@@ -95,7 +95,7 @@ extension TodoListViewController: UITableViewDataSource {
 extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let task = presenter?.tasks[indexPath.row] else { return 0.0 }
-        return ToDoTableViewCell.sizeThatFits(size: tableView.frame.size, task: task).height
+        return TodoTableViewCell.sizeThatFits(size: tableView.frame.size, task: task).height
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -105,10 +105,9 @@ extension TodoListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let task = presenter?.tasks[indexPath.row]
-            presenter?.deleteTask(by: task?.id)
-            tableView.deleteRows(at: [indexPath], with: .left)
-        }
+        guard editingStyle == .delete,
+              let task = presenter?.tasks[indexPath.row] else { return }
+        presenter?.deleteTask(by: task.id)
+        tableView.deleteRows(at: [indexPath], with: .left)
     }
 }

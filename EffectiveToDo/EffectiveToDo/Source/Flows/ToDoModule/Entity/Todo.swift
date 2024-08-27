@@ -8,7 +8,7 @@
 import Foundation
 
 struct Todo: Codable {
-    let id: String?
+    let id: Int
     let title: String
     let subtitle: String?
     let createdAt: Date?
@@ -26,7 +26,7 @@ struct Todo: Codable {
     
     // MARK: - Init
     
-    init(id: String?,
+    init(id: Int,
          title: String,
          subtitle: String?,
          createdAt: Date?,
@@ -48,7 +48,7 @@ extension Todo {
         return Todo(id: id,
                     title: title,
                     subtitle: subtitle,
-                    createdAt: createdAt,
+                    createdAt: createdAt ?? Date(),
                     isCompleted: completed)
     }
 }
@@ -58,7 +58,7 @@ extension Todo {
 extension Todo {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try? container.decodeIfPresent(String.self, forKey: .id)
+        self.id = try container.decode(Int.self, forKey: .id)
         self.title = try container.decode(String.self, forKey: .title)
         self.isCompleted = try container.decode(Bool.self, forKey: .isCompleted)
         self.createdAt = try? container.decode(Date.self, forKey: .createdAt)

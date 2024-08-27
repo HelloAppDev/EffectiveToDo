@@ -22,7 +22,7 @@ private enum Constants {
 }
 
 class DetailViewController: UIViewController {
-    var presenter: DetailPresenterProtocol?
+    var presenter: DetailPresenterProtocol
 
     private lazy var titleLabel = UILabel().forAutolayout().applying {
         $0.text = Constants.titleText
@@ -65,22 +65,30 @@ class DetailViewController: UIViewController {
 
     private var isCompleted = false {
         didSet {
-            completedButton.setImage(isCompleted
-                                     ? Constants.completeImage
-                                     : Constants.notCompleteImage,
-                                     for: .normal)
+            toggleComplete()
         }
+    }
+
+    init(presenter: DetailPresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupConstraints()
-        if let presenter {
-            updateContent(with: presenter)
-        }
+        updateContent()
     }
+}
 
+// MARK: - Setup views
+
+extension DetailViewController {
     private func setupViews() {
         view.backgroundColor = .white
         view.addSubview(titleLabel)
@@ -132,32 +140,43 @@ class DetailViewController: UIViewController {
         }
     }
 
-    @objc private func completedButtonTapped() {
-        completedButton.isSelected.toggle()
-        isCompleted = completedButton.isSelected
+    private func toggleComplete() {
+        completedButton.isSelected = isCompleted
+        completedButton.setImage(isCompleted
+                                 ? Constants.completeImage
+                                 : Constants.notCompleteImage,
+                                 for: .normal)
     }
-    
+}
+
+// MARK: - User interactive methods
+
+extension DetailViewController {
+    @objc private func completedButtonTapped() {
+        isCompleted.toggle()
+    }
+
     @objc private func saveButtonTapped() {
         guard let title = titleTextField.text,
               !title.isEmpty else { return }
         let subtitle = subtitleTextField.text
-
-        if let task = presenter?.task {
+        
+        if let task = presenter.task {
             let todo = task.changeParams(title: title,
                                          subtitle: subtitle,
                                          completed: isCompleted)
 
-            presenter?.saveTodo(with: todo)
+            presenter.saveTodo(with: todo)
         } else {
             let newTodo = Todo(
-                id: UUID().uuidString,
+                id: abs(UUID().uuidString.hashValue),
                 title: title,
                 subtitle: subtitle,
                 createdAt: Date(),
                 isCompleted: isCompleted
             )
 
-            presenter?.saveTodo(with: newTodo)
+            presenter.saveTodo(with: newTodo)
         }
     }
 }
@@ -165,7 +184,7 @@ class DetailViewController: UIViewController {
 // MARK: - Update content
 
 extension DetailViewController {
-    private func updateContent(with presenter: DetailPresenterProtocol) {
+    private func updateContent() {
         titleTextField.text = presenter.task?.title
         subtitleTextField.text = presenter.task?.subtitle
         isCompleted = presenter.task?.isCompleted ?? false
