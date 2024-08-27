@@ -166,24 +166,26 @@ extension DetailViewController {
         }
 
         let subtitle = subtitleTextField.text
-
+        
+        let todo: Todo
+        
         if let task = presenter.task {
-            let todo = task.changeParams(title: title,
-                                         subtitle: subtitle,
-                                         completed: isCompleted)
-
-            presenter.saveTodo(with: todo)
+            todo = task.changeParams(
+                title: title,
+                subtitle: subtitle,
+                completed: isCompleted
+            )
         } else {
-            let newTodo = Todo(
+            todo = Todo(
                 id: abs(UUID().uuidString.hashValue),
                 title: title,
                 subtitle: subtitle,
                 createdAt: Date(),
                 isCompleted: isCompleted
             )
-
-            presenter.saveTodo(with: newTodo)
         }
+
+        presenter.saveTodo(with: todo)
     }
 
     private func showAlertForEmptyTitle() {
