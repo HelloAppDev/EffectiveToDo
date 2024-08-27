@@ -12,6 +12,6 @@ protocol TodoListInteractorProtocol: AnyObject {
 
     func fetchTasks()
     func loadTasksFromCoreData()
-    func saveOrUpdateTask(_ task: Todo)
+    func saveOrUpdateTask(_ task: Todo, completion: @escaping () -> Void)
     func deleteTask(_ task: Todo)
 }

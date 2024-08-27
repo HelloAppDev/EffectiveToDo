@@ -8,7 +8,7 @@
 import Foundation
 
 class DetailInteractor: DetailInteractorProtocol {
-    var presenter: DetailPresenterProtocol?
+    weak var presenter: DetailPresenterProtocol?
 
     func getTask(by title: String, subtitle: String?, isCompleted: Bool) -> Todo {
         let todoSubtitle = subtitle?.isEmpty == true ? nil : subtitle
