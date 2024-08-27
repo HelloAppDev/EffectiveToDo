@@ -26,7 +26,7 @@ class DetailViewController: UIViewController {
     var presenter: DetailPresenterProtocol
 
     // MARK: Private properties
-    
+
     private lazy var titleLabel = UILabel().forAutolayout().applying {
         $0.text = Constants.titleText
         $0.font = Constants.titleFont
@@ -78,7 +78,7 @@ class DetailViewController: UIViewController {
     var task: Todo?
 
     // MARK: Lifecycle
-    
+
     init(presenter: DetailPresenterProtocol) {
         self.presenter = presenter
         self.task = presenter.task
