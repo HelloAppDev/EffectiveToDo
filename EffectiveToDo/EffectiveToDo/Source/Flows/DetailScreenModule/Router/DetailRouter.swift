@@ -8,15 +8,15 @@
 import UIKit
 
 class DetailRouter: DetailRouterProtocol {
-    
     weak var viewController: UIViewController?
+    weak var firstModuleInput: FirstModuleInput?
     
     func navigateBack(with task: Todo) {
-        print(task)
+        firstModuleInput?.receiveDataFromSecondModule(task: task)
         viewController?.navigationController?.popViewController(animated: true)
     }
     
-    static func createModule(with task: Todo? = nil) -> UIViewController {
+    static func createModule(with task: Todo? = nil, input: FirstModuleInput?) -> UIViewController {
         let view = DetailViewController()
         let presenter = DetailPresenter()
         let interactor = DetailInteractor()
@@ -28,6 +28,7 @@ class DetailRouter: DetailRouterProtocol {
         presenter.router = router
         presenter.task = task
         router.viewController = view
+        router.firstModuleInput = input
 
         return view
     }

@@ -11,6 +11,7 @@ protocol TodoListInteractorProtocol: AnyObject {
     var presenter: TodoListPresenterProtocol? { get set }
 
     func fetchTasks()
-    func saveTaskToCoreData(task: Todo)
-    func removeTaskFromDB(task: Todo)
+    func loadTasksFromCoreData()
+    func saveOrUpdateTask(_ task: Todo)
+    func deleteTask(_ task: Todo)
 }

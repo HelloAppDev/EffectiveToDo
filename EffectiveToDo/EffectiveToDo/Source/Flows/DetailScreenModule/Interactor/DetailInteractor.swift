@@ -8,7 +8,6 @@
 import Foundation
 
 class DetailInteractor: DetailInteractorProtocol {
-    
     func saveTodo(_ todo: Todo) {
     }
 }

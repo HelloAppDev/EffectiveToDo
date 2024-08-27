@@ -11,9 +11,9 @@ class TodoListPresenter: TodoListPresenterProtocol {
     weak var view: TodoListViewProtocol?
     var interactor: TodoListInteractorProtocol
     var router: TodoListRouterProtocol
-    
+
     var tasks: [Todo] = []
-    
+
     init(view: TodoListViewProtocol,
          interactor: TodoListInteractorProtocol,
          router: TodoListRouterProtocol) {
@@ -21,11 +21,11 @@ class TodoListPresenter: TodoListPresenterProtocol {
         self.interactor = interactor
         self.router = router
     }
-    
+
     func viewDidLoad() {
         interactor.fetchTasks()
     }
-    
+
     func convertAsTask(_ todoDBO: [TodoDBO]) -> [Todo] {
         return todoDBO.map { todoDBO in
             Todo(id: todoDBO.id,
@@ -35,17 +35,24 @@ class TodoListPresenter: TodoListPresenterProtocol {
                  isCompleted: todoDBO.isCompleted)
         }
     }
-    
+
     func didFetchTasks(_ tasks: [Todo]) {
         self.tasks = tasks
         view?.refreshTodoList()
     }
-    
+
     func routeToAddTask() {
-        router.navigateToNewTask()
+        router.navigateToNewTask(input: interactor as! FirstModuleInput)
     }
-    
+
     func navigateToDetail(_ todo: Todo) {
-        router.navigateToTaskDetail(with: todo)
+        router.navigateToTaskDetail(with: todo, input: interactor as! FirstModuleInput)
+    }
+
+    func deleteTask(by id: String?) {
+        guard let taskIndex = tasks.firstIndex(where: { $0.id == id }),
+        let task = tasks.first(where: { $0.id == id }) else { return }
+        tasks.remove(at: taskIndex)
+        interactor.deleteTask(task)
     }
 }

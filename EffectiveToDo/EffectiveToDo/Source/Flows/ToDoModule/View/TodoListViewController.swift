@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class TodoListViewController: UIViewController, TodoListViewProtocol {
+final class TodoListViewController: UIViewController {
     var presenter: TodoListPresenterProtocol?
 
     private lazy var tableView = UITableView().forAutolayout().applying {
@@ -33,7 +33,7 @@ final class TodoListViewController: UIViewController, TodoListViewProtocol {
 
 // MARK: - Refresh data
 
-extension TodoListViewController {
+extension TodoListViewController: TodoListViewProtocol {
     func refreshTodoList() {
         tableView.reloadData()
     }
@@ -76,7 +76,7 @@ extension TodoListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return presenter?.tasks.count ?? 0
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ToDoTableViewCell.reuseId) as? ToDoTableViewCell else {
             return UITableViewCell()
@@ -85,6 +85,7 @@ extension TodoListViewController: UITableViewDataSource {
         if let task = presenter?.tasks[indexPath.row] {
             cell.updateCell(with: task)
         }
+
         return cell
     }
 }
@@ -93,12 +94,21 @@ extension TodoListViewController: UITableViewDataSource {
 
 extension TodoListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return ToDoTableViewCell.sizeThatFits(size: tableView.frame.size).height
+        guard let task = presenter?.tasks[indexPath.row] else { return 0.0 }
+        return ToDoTableViewCell.sizeThatFits(size: tableView.frame.size, task: task).height
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let task = presenter?.tasks[indexPath.row] {
             presenter?.navigateToDetail(task)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let task = presenter?.tasks[indexPath.row]
+            presenter?.deleteTask(by: task?.id)
+            tableView.deleteRows(at: [indexPath], with: .left)
         }
     }
 }

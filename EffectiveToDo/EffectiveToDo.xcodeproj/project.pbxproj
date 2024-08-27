@@ -197,7 +197,6 @@
 				1596BB3B2C7B9B810079D573 /* NetworkResponses */,
 				1596BB232C7B7E6F0079D573 /* Helpers */,
 				150773FF2C7B0C7400CE7044 /* Extensions */,
-				1596BB1E2C7B16A60079D573 /* UITableViewCells */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -242,6 +241,7 @@
 		1596BB262C7B7FE30079D573 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1596BB1E2C7B16A60079D573 /* UITableViewCells */,
 				150773CD2C78CE8200CE7044 /* TodoListViewController.swift */,
 				1596BB2F2C7B86370079D573 /* TodoListViewProtocol.swift */,
 			);
