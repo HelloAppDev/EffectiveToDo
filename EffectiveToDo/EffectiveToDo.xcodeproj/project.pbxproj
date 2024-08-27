@@ -45,6 +45,9 @@
 		1596BB5C2C7BF65C0079D573 /* DetailRouterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */; };
 		1596BB5E2C7E07EE0079D573 /* UIButtonExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5D2C7E07EE0079D573 /* UIButtonExtensions.swift */; };
 		1596BB602C7E162E0079D573 /* UIViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB5F2C7E162E0079D573 /* UIViewControllerExtensions.swift */; };
+		1596BB652C7E8D520079D573 /* LaunchManagerUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB642C7E8D520079D573 /* LaunchManagerUnitTest.swift */; };
+		1596BB672C7E90FA0079D573 /* CoreDataManagerUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB662C7E90FA0079D573 /* CoreDataManagerUnitTest.swift */; };
+		1596BB692C7E92FE0079D573 /* TodosUnitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1596BB682C7E92FE0079D573 /* TodosUnitTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +108,9 @@
 		1596BB5B2C7BF65C0079D573 /* DetailRouterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRouterProtocol.swift; sourceTree = "<group>"; };
 		1596BB5D2C7E07EE0079D573 /* UIButtonExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExtensions.swift; sourceTree = "<group>"; };
 		1596BB5F2C7E162E0079D573 /* UIViewControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtensions.swift; sourceTree = "<group>"; };
+		1596BB642C7E8D520079D573 /* LaunchManagerUnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchManagerUnitTest.swift; sourceTree = "<group>"; };
+		1596BB662C7E90FA0079D573 /* CoreDataManagerUnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerUnitTest.swift; sourceTree = "<group>"; };
+		1596BB682C7E92FE0079D573 /* TodosUnitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodosUnitTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +174,9 @@
 			isa = PBXGroup;
 			children = (
 				150773E32C78CE8400CE7044 /* EffectiveToDoTests.swift */,
+				1596BB642C7E8D520079D573 /* LaunchManagerUnitTest.swift */,
+				1596BB662C7E90FA0079D573 /* CoreDataManagerUnitTest.swift */,
+				1596BB682C7E92FE0079D573 /* TodosUnitTest.swift */,
 			);
 			path = EffectiveToDoTests;
 			sourceTree = "<group>";
@@ -547,7 +556,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1596BB652C7E8D520079D573 /* LaunchManagerUnitTest.swift in Sources */,
+				1596BB672C7E90FA0079D573 /* CoreDataManagerUnitTest.swift in Sources */,
 				150773E42C78CE8400CE7044 /* EffectiveToDoTests.swift in Sources */,
+				1596BB692C7E92FE0079D573 /* TodosUnitTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

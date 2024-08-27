@@ -17,7 +17,7 @@ protocol TodoModuleInput: AnyObject {
 }
 
 class TodoListInteractor: TodoListInteractorProtocol {
-    var presenter: TodoListPresenterProtocol?
+    weak var presenter: TodoListPresenterProtocol?
     let coreDataManager = CoreDataManager.shared
     let globalqueue = DispatchQueue.global(qos: .background)
 
@@ -42,6 +42,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
                     self.presenter?.didFetchTasks(tasks)
                 }
             } catch {
+                // TODO: handle error
                 print(error)
             }
         }
@@ -57,6 +58,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
             do {
                 try context.save()
             } catch {
+                // TODO: handle error
                 print(error)
             }
         }
@@ -85,6 +87,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
                     completion()
                 }
             } catch {
+                // TODO: handle error
                 print(error)
             }
         }
@@ -104,6 +107,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
                     try context.save()
                 }
             } catch {
+                // TODO: handle error
                 print(error)
             }
         }
@@ -124,6 +128,7 @@ class TodoListInteractor: TodoListInteractorProtocol {
         do {
             try context.save()
         } catch {
+            // TODO: handle error
             print(error)
         }
     }
@@ -138,6 +143,7 @@ extension TodoListInteractor {
             guard let url = URL(string: Constants.url) else { return }
             let task = URLSession.shared.dataTask(with: url) { data, _, error in
                 if let error = error {
+                    // TODO: handle error
                     print(error)
                     return
                 }
@@ -151,6 +157,7 @@ extension TodoListInteractor {
                         self.presenter?.didFetchTasks(todoResponse.todos)
                     }
                 } catch let jsonError {
+                    // TODO: handle error
                     print(jsonError)
                 }
             }
@@ -166,6 +173,5 @@ extension TodoListInteractor: TodoModuleInput {
         saveOrUpdateTask(task) { [weak self] in
             self?.fetchTasks()
         }
-        
     }
 }
