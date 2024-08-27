@@ -92,6 +92,12 @@ class DetailViewController: UIViewController {
         setupConstraints()
         updateContent()
         hideKeyBoardOnTap()
+        registerNotifications()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
 
@@ -146,6 +152,34 @@ extension DetailViewController {
             make.bottom.equalToSuperview().offset(-80)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(46)
+        }
+    }
+    
+    private func registerNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        adjustSaveButtonPosition(showing: true, notification: notification)
+    }
+
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        adjustSaveButtonPosition(showing: false, notification: notification)
+    }
+
+    private func adjustSaveButtonPosition(showing: Bool, notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval else { return }
+
+        let adjustmentHeight = showing ? -(keyboardFrame.height + 10) : -80
+
+        UIView.animate(withDuration: animationDuration) {
+            self.saveButton.snp.updateConstraints { make in
+                make.bottom.equalToSuperview().offset(adjustmentHeight)
+            }
+            self.view.layoutIfNeeded()
         }
     }
 
