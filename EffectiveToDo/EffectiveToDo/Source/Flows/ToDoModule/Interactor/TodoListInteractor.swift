@@ -16,7 +16,7 @@ protocol TodoModuleInput: AnyObject {
     func receiveDataFromDetailModule(task: Todo)
 }
 
-class TodoListInteractor: TodoListInteractorProtocol {
+final class TodoListInteractor: TodoListInteractorProtocol {
     weak var presenter: TodoListPresenterProtocol?
     let coreDataManager = CoreDataManager.shared
     let globalqueue = DispatchQueue.global(qos: .background)

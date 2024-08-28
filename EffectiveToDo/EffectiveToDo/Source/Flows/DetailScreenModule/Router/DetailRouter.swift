@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailRouter: DetailRouterProtocol {
+final class DetailRouter: DetailRouterProtocol {
     weak var viewController: UIViewController?
     weak var firstModuleInput: TodoModuleInput?
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DetailInteractor: DetailInteractorProtocol {
+final class DetailInteractor: DetailInteractorProtocol {
     weak var presenter: DetailPresenterProtocol?
 
     func getTask(by title: String, subtitle: String?, isCompleted: Bool) -> Todo {

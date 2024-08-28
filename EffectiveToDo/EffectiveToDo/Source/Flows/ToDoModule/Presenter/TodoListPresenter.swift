@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TodoListPresenter: TodoListPresenterProtocol {
+final class TodoListPresenter: TodoListPresenterProtocol {
     weak var view: TodoListViewProtocol?
     var interactor: TodoListInteractorProtocol
     var router: TodoListRouterProtocol

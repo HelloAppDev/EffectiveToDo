@@ -11,7 +11,7 @@ private enum Constants {
     static let errorText = "Задайте название действию."
 }
 
-class DetailPresenter: DetailPresenterProtocol {
+final class DetailPresenter: DetailPresenterProtocol {
     weak var view: DetailViewProtocol?
     var interactor: DetailInteractorProtocol?
     var router: DetailRouterProtocol?
