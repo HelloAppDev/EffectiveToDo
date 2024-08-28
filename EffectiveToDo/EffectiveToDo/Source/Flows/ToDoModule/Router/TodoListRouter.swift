@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TodoListRouter: TodoListRouterProtocol {
+final class TodoListRouter: TodoListRouterProtocol {
     weak var viewController: UIViewController?
 
     static func createModule() -> UIViewController {

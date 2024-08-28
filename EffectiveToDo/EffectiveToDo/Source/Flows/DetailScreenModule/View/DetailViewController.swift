@@ -22,7 +22,7 @@ private enum Constants {
     static let textFieldFont: UIFont = .systemFont(ofSize: 14)
 }
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
     var presenter: DetailPresenterProtocol
 
     // MARK: Private properties
